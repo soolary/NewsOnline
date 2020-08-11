@@ -15,6 +15,8 @@ const Home = () => import('../views/home/index.vue')
 const Layout = () => import('../views/layout/index.vue')
 // 导入发布文章页面
 const addArticle = () => import('../views/addArticle/addArticle.vue')
+// 导入评论管理页面
+const comment = () => import('../views/comment/index.vue')
 const NotFound = () => import('../views/page404/index.vue')
 Vue.use(VueRouter)
 
@@ -34,6 +36,8 @@ const routes = [
       { path: '/addArticle', component: addArticle }
     ]
   },
+  // 评论
+  { path: '/comment', component: comment },
   // 无法匹配路由会显示404页面
   { path: '*', component: NotFound }
 ]
