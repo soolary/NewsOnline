@@ -5,7 +5,8 @@ import App from './App.vue'
 import ElementUI from 'element-ui'
 // 引入样式
 import 'element-ui/lib/theme-chalk/index.css'
-
+// 引入公共组件
+import golbalCom from './components/index.js'
 // 脚手架工具自动创建的路由配置文件
 // 由于目录下有一个名为index.js 则可以简写：省略index.js
 //     完整： import XXX from './router/index.js'
@@ -13,9 +14,9 @@ import 'element-ui/lib/theme-chalk/index.css'
 import router from './router'
 
 // 以Vue插件的格式来引入elementUI
-Vue.use(ElementUI);
-
-Vue.config.productionTip = false;
+Vue.use(ElementUI)
+Vue.use(golbalCom)
+Vue.config.productionTip = false
 
 // Vue是一个构造器，它有一个原型对象prototype
 // Vue.prototype.$eventBus 给Vue的原型对象补充一个名为$eventBus的属性
@@ -27,5 +28,5 @@ Vue.prototype.$eventBus = new Vue()
 
 new Vue({
   router,
-  render:h => h(App)
+  render: h => h(App)
 }).$mount('#app')

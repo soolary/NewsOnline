@@ -1,9 +1,13 @@
 <template>
-  <div>设了个置</div>
+  <div class="setting">
+    <Breadcrumb></Breadcrumb>
+  </div>
 </template>
 
 <script>
-export default {}
+export default {
+  name: 'setting'
+}
 </script>
 
 <style></style>
