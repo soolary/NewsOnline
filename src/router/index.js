@@ -13,6 +13,8 @@ const Login = () => import('../views/login/index.vue')
 const Home = () => import('../views/home/index.vue')
 
 const Layout = () => import('../views/layout/index.vue')
+// 导入发布文章页面
+const addArticle = () => import('../views/addArticle/addArticle.vue')
 const NotFound = () => import('../views/page404/index.vue')
 Vue.use(VueRouter)
 
@@ -20,13 +22,16 @@ Vue.use(VueRouter)
 const routes = [
   { path: '/login', component: Login },
   // 主页
+
   // 嵌套路由
   {
     path: '/',
     component: Layout,
     children: [
       // Home嵌套在主页里面
-      { path: '', component: Home }
+      { path: '', component: Home },
+      // 发布文章
+      { path: '/addArticle', component: addArticle }
     ]
   },
   // 无法匹配路由会显示404页面
