@@ -33,11 +33,12 @@ const routes = [
       // Home嵌套在主页里面
       { path: '', component: Home },
       // 发布文章
-      { path: '/addArticle', component: addArticle }
+      { path: '/addArticle', component: addArticle },
+      // 评论
+      { path: '/comment', component: comment }
     ]
   },
-  // 评论
-  { path: '/comment', component: comment },
+
   // 无法匹配路由会显示404页面
   { path: '*', component: NotFound }
 ]
