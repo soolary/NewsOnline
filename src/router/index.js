@@ -20,7 +20,7 @@ const comment = () => import('../views/comment/index.vue')
 // 导入粉丝管理页面
 const fans = () => import('../views/fans/fans.vue')
 // 导入内容管理页面
-const content = () => import('../views/content/index.vue')
+const articles = () => import('../views/articles/index.vue')
 // 导入素材管理页面
 const image = () => import('../views/image/image.vue')
 // 导入个人设置页面
@@ -48,7 +48,7 @@ const routes = [
       // 素材
       { path: '/image', component: image },
       // 内容
-      { path: '/articles', component: content },
+      { path: '/articles', component: articles },
       // 粉丝
       { path: '/fans', component: fans },
       // 设置
