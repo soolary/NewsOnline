@@ -17,6 +17,15 @@ const Layout = () => import('../views/layout/index.vue')
 const addArticle = () => import('../views/addArticle/addArticle.vue')
 // 导入评论管理页面
 const comment = () => import('../views/comment/index.vue')
+// 导入粉丝管理页面
+const fans = () => import('../views/fans/fans.vue')
+// 导入内容管理页面
+const content = () => import('../views/content/index.vue')
+// 导入素材管理页面
+const image = () => import('../views/image/image.vue')
+// 导入个人设置页面
+const settings = () => import('../views/settings/settings.vue')
+// 导入啥都没有页面
 const NotFound = () => import('../views/page404/index.vue')
 Vue.use(VueRouter)
 
@@ -33,11 +42,20 @@ const routes = [
       // Home嵌套在主页里面
       { path: '', component: Home },
       // 发布文章
-      { path: '/addArticle', component: addArticle }
+      { path: '/addArticle', component: addArticle },
+      // 评论
+      { path: '/comment', component: comment },
+      // 素材
+      { path: '/image', component: image },
+      // 内容
+      { path: '/articles', component: content },
+      // 粉丝
+      { path: '/fans', component: fans },
+      // 设置
+      { path: '/settings', component: settings }
     ]
   },
-  // 评论
-  { path: '/comment', component: comment },
+
   // 无法匹配路由会显示404页面
   { path: '*', component: NotFound }
 ]
