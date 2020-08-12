@@ -111,11 +111,11 @@ export default {
         .catch(err => {
           console.dir(err)
           // 401表示没有权限
-          if (err.response.status === 401) {
-            //
-            alert('无权访问')
-            this.$router.push('/login')
-          }
+          // if (err.response.status === 401) {
+          //   //
+          //   alert('无权访问')
+          //   this.$router.push('/login')
+          // }
         })
     },
     // 退出功能
