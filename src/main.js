@@ -13,9 +13,9 @@ import 'element-ui/lib/theme-chalk/index.css'
 import router from './router'
 
 // 以Vue插件的格式来引入elementUI
-Vue.use(ElementUI);
+Vue.use(ElementUI)
 
-Vue.config.productionTip = false;
+Vue.config.productionTip = false
 
 // Vue是一个构造器，它有一个原型对象prototype
 // Vue.prototype.$eventBus 给Vue的原型对象补充一个名为$eventBus的属性
@@ -27,5 +27,5 @@ Vue.prototype.$eventBus = new Vue()
 
 new Vue({
   router,
-  render:h => h(App)
+  render: h => h(App)
 }).$mount('#app')

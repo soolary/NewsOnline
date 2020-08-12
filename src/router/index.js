@@ -5,6 +5,7 @@
 import { getUser } from '../utils/storage'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+// 导入element
 
 // 把组件的引入改成函数的写法
 // 以下异步引入路由，打开页面时才加载对应的组件，保证了首屏打开速度
