@@ -2,10 +2,7 @@
   <div class="comment">
     <el-crad class="box-card">
       <div slot="header">
-        <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>评论管理</el-breadcrumb-item>
-        </el-breadcrumb>
+        <el-breadcrumb></el-breadcrumb>
       </div>
       <div class="item">
         <el-table :data="tableData" style="width: 100%">
