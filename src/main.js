@@ -8,15 +8,17 @@ import 'element-ui/lib/theme-chalk/index.css'
 // 引入公共组件
 import golbalCom from './components/index.js'
 import '@/styles/index.less'
+import request from '@/utils/request.js'
 // 脚手架工具自动创建的路由配置文件
 // 由于目录下有一个名为index.js 则可以简写：省略index.js
 //     完整： import XXX from './router/index.js'
 //     简写： import XXX from './router'
 import router from './router'
-
+import store from '@/store/index.js'
 // 以Vue插件的格式来引入elementUI
 Vue.use(ElementUI)
 Vue.use(golbalCom)
+Vue.prototype.$request = request
 Vue.config.productionTip = false
 
 // Vue是一个构造器，它有一个原型对象prototype
@@ -29,5 +31,6 @@ Vue.prototype.$eventBus = new Vue()
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')
