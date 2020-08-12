@@ -5,27 +5,38 @@
       <div slot="header" class="clearfix">
         <Breadcrumb></Breadcrumb>
       </div>
-      <!-- tab导航栏 -->
-      <el-radio-group v-model="tabPosition" style="margin-bottom: 30px;">
-        <el-radio-button label="全部"></el-radio-button>
-        <el-radio-button label="收藏"></el-radio-button>
-      </el-radio-group>
+      <!-- 按钮 -->
+      <div class="btn-box">
+        <!-- tab导航栏 -->
+        <el-radio-group
+          v-model="tabPosition.collect"
+          style="margin-bottom: 30px;"
+        >
+          <el-radio-button :label="false">全部</el-radio-button>
+          <el-radio-button :label="true">收藏</el-radio-button>
+        </el-radio-group>
         <!-- 上传按钮 -->
         <el-button
           style="margin-left: 10px; float:right;"
           size="small"
           type="success"
           @click="dialogTableVisible = true"
-          >上传到服务器</el-button
+          >上传图片素材</el-button
         >
+      </div>
+      <!-- 列表 -->
+      <div class="list-box">
+        <div class="item-box" v-for="i in 8" :key="i">
+          <img src="../../assets/avatar.jpg" alt />
+          <div class="option">
+            <span class="el-icon-star-off"></span>
+            <span class="el-icon-delete"></span>
+          </div>
+        </div>
+      </div>
 
       <!-- 分页 -->
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="1000"
-        class="fenye"
-      >
+      <el-pagination background layout="prev, pager, next" :total="1000">
       </el-pagination>
     </el-card>
     <!-- 弹出框-->
@@ -52,9 +63,13 @@
 export default {
   data () {
     return {
-      tabPosition: 'left',
       dialogTableVisible: false,
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      //   查询条件
+      tabPosition: {
+        //   是否查的收藏 true查询收藏  false查询全部
+        collect: false
+      }
     }
   }
 }
@@ -85,5 +100,39 @@ export default {
   display: block;
   /* text-align: center; */
 }
-
+.list-box {
+  .item-box {
+    display: inline-block;
+    width: 180px;
+    height: 180px;
+    margin-right: 60px;
+    border: 1px dashed #ddd;
+    position: relative;
+    margin-bottom: 20px;
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .option {
+      width: 100%;
+      height: 30px;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+      text-align: center;
+      line-height: 30px;
+      span {
+        color: #fff;
+        margin: 0 20px;
+        // 不加&解析后：span .red{} 后代选择器
+        // 加上&节后后：span.red{}  交集选择器
+        &.red {
+          color: red;
+        }
+      }
+    }
+  }
+}
 </style>
