@@ -1,26 +1,39 @@
 <template>
   <div class="uploadingl">
+    <!-- <div class="coverimg">
+      <img :src="value || defaultImage" alt="" class="cover" @click="pop_up" />
+    </div> -->
     <el-dialog
       :visible.sync="showone"
       width="720px"
       :modal-append-to-body="false"
     >
       <div>
+        {{ tabPosition }}
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
           <el-tab-pane label="素材库" name="first">
-            <el-radio-group v-model="tabPosition" style="margin-bottom: 30px;">
+            <el-radio-group
+              v-model="tabPosition"
+              style="margin-bottom: 30px;"
+              @change="getpage"
+            >
               <el-radio-button :label="0"> 全部</el-radio-button>
               <el-radio-button :label="1">收藏</el-radio-button>
             </el-radio-group>
             <el-row :gutter="20">
-              <el-col :span="4" v-for="(item, index) in 12" :key="index">
+              <el-col :span="4" v-for="item in listimg" :key="item.id">
                 <div class="grid-content">
-                  <img
-                    src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1091579268,2185400060&fm=26&gp=0.jpg"
-                    alt=""
-                  /></div
+                  <img :src="item.url" alt="" /></div
               ></el-col>
             </el-row>
+            <!-- 分页 -->
+            <el-pagination
+              background
+              layout="prev, pager, next"
+              @current-change="handleCurrentChange"
+              :total="total"
+            >
+            </el-pagination>
           </el-tab-pane>
           <el-tab-pane label="上传图片" name="second">
             <el-upload
@@ -47,23 +60,56 @@
 </template>
 
 <script>
+// 导入接口
+import { getuserimages } from '../../api/addArticle.js'
 import { getUser } from '@/utils/storage.js'
+import defaultImage from '@/assets/default.png'
 export default {
+  props: ['value'],
   data () {
     return {
-      showone: false,
+      // 分页
+      page: 1,
+      total: 1,
+      per_page: 12,
+      listimg: [],
+      defaultImage,
+      showone: true,
       activeName: 'first',
       imageUrl: '',
-      tabPosition: '全部',
+      tabPosition: '0',
       headers: {
         Authorization: `Bearer ${getUser().token}`
       }
     }
   },
+  created () {
+    this.getpage()
+  },
   methods: {
+    handleCurrentChange (val) {
+      this.page = val
+      this.getpage()
+    },
+    // 分页方法
+    getpage () {
+      getuserimages({
+        per_page: this.per_page,
+        page: this.page,
+        collect: this.tabPosition
+      }).then(res => {
+        console.log('图片', res)
+        this.listimg = res.data.data.results
+        this.total = res.data.data.total_count
+      })
+    },
+    // 弹窗
+    pop_up () {
+      this.showone = true
+    },
     // 确定
     onensure () {
-      this.$emit('onensure', this.imageUrl)
+      this.$emit('input', this.imageUrl)
       this.showone = false
     },
     handleClick (tab, event) {
@@ -91,6 +137,22 @@ export default {
 
 <style lang="less">
 .uploadingl {
+  // .bockimg {
+  //   display: -webkit-box;
+  //   -webkit-line-clamp: 2;
+  // }
+  .coverimg {
+    display: flex;
+    justify-content: left;
+
+    .cover {
+      display: block;
+      width: 155px;
+      height: 155px;
+      border: 1px dotted #ccc;
+      margin-right: 100px;
+    }
+  }
   .el-dialog__footer {
     .dialog-footer {
       text-align: right;
@@ -129,5 +191,15 @@ export default {
       width: 100%;
     }
   }
+  // position: relative;
+  // .aftern {
+  //   position: absolute;
+  //   left: 0;
+  //   top: 0;
+  //   width: 100%;
+  //   height: 100%;
+  //   background: rgba(0, 0, 0, 0.3) url('@/assets/selected.png') no-repeat 50%
+  //     50px 50px;
+  // }
 }
 </style>
