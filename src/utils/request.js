@@ -1,13 +1,12 @@
 /**
  * 基于 axios 封装 请求模块
  */
-import { getUser } from './storage.js'
+import { getUser, delUser } from './storage.js'
 import JSONbig from 'json-bigint'
 import axios from 'axios'
 
 import { Message } from 'element-ui'
-
-// import router from '@/router'
+import router from '@/router'
 
 // 创建axios的实例
 // 可以写自己的配置项  http://www.axios-js.com/docs/#axios-create-config
@@ -58,23 +57,20 @@ instance.interceptors.request.use(
 // 相应拦截器
 instance.interceptors.response.use(
   response => {
-    if (response.message) {
-      Message.info(response.message)
-    }
     return response
+  },
+  err => {
+    // 判断响应状态码是401，清除本地的用户信息，跳转至登录页面
+    if (err.response && err.response.status === 401) {
+      delUser()
+      router.push('/login')
+    } else {
+      if (err.response.status !== 201) {
+        Message.fail(err.response.message)
+      }
+    }
+    return Promise.reject(err)
   }
-  // err => {
-  // 判断响应状态码是401，清除本地的用户信息，跳转至登录页面
-  // if (err.response && err.response.status === 401) {
-  //   delUser()
-  //   router.push('/login')
-  // } else {
-  //   if (err.response.status !== 201) {
-  //     Message.fail(err.response.message)
-  //   }
-  // }
-  // return Promise.reject(err)
-  // }
 )
 
 // 默认导出
