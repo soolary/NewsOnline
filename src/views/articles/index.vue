@@ -4,6 +4,7 @@
       <div slot="header" class="clearfix">
         <Breadcrumb></Breadcrumb>
       </div>
+      <!-- 表单 -->
       <el-form :model="form">
         <el-form-item label="状态" class="radio">
           <el-radio-group v-model="radio">
@@ -15,6 +16,7 @@
             <el-radio :label="6">已删除</el-radio>
           </el-radio-group>
         </el-form-item>
+        <!-- 频道下拉菜单 -->
         <el-form-item label="频道" class="select">
           <el-select v-model="value" placeholder="请选择频道">
             <el-option
@@ -45,6 +47,7 @@
       <div slot="header" class="clearfix">
         <span>根据筛选条件红查询到1234条结果</span>
       </div>
+      <!-- 表格 -->
       <el-table :data="tableData" style="width: 100%" class="table">
         <el-table-column prop="cover" label="封面" width="250">
           <img src="../../assets/avatar.jpg" alt="" />
@@ -62,6 +65,7 @@
           <el-button type="danger" icon="el-icon-delete" circle></el-button>
         </el-table-column>
       </el-table>
+      <!-- 分页 -->
       <div class="paging">
         <el-pagination background layout="prev, pager, next" :total="1000">
         </el-pagination>
@@ -126,23 +130,7 @@ export default {
       tableData: [
         {
           date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
+          name: '王小虎'
         }
       ]
     }
