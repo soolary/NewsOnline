@@ -18,12 +18,12 @@
         </el-form-item>
         <!-- 频道下拉菜单 -->
         <el-form-item label="频道" class="select">
-          <el-select v-model="value" placeholder="请选择频道">
+          <el-select v-model="form.channel_id" placeholder="请选择频道">
             <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in optionsList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
             >
             </el-option>
           </el-select>
@@ -45,55 +45,60 @@
     </el-card>
     <el-card class="bot-card">
       <div slot="header" class="clearfix">
-        <span>根据筛选条件红查询到1234条结果</span>
+        <span>根据筛选条件红查询到1234条结果:</span>
       </div>
       <!-- 表格 -->
       <el-table :data="tableData" style="width: 100%" class="table">
-        <el-table-column prop="cover" label="封面" width="250">
+        <el-table-column label="封面" width="250">
           <img src="../../assets/avatar.jpg" alt="" />
         </el-table-column>
-        <el-table-column prop="title" label="标题" width="250"
-          >我是标题
+        <el-table-column prop="title" label="标题" width="250">
         </el-table-column>
         <el-table-column prop="status" label="状态" width="180"
-          ><el-tag type="success">状态</el-tag>
+          ><template v-slot="scope">
+            <el-tag v-if="scope.row.status === 0" type="info">草稿</el-tag>
+            <el-tag v-if="scope.row.status === 1">待审核</el-tag>
+            <el-tag v-if="scope.row.status === 2" type="success"
+              >审核通过</el-tag
+            >
+            <el-tag v-if="scope.row.status === 3" type="warning"
+              >审核失败</el-tag
+            >
+          </template>
         </el-table-column>
-        <el-table-column prop="date" label="发布时间" width="250">
+        <el-table-column prop="pubdate" label="发布时间" width="250">
         </el-table-column>
-        <el-table-column prop="operation" label="操作" width="250">
+        <el-table-column label="操作" width="250">
           <el-button type="primary" icon="el-icon-edit" circle></el-button>
           <el-button type="danger" icon="el-icon-delete" circle></el-button>
         </el-table-column>
       </el-table>
       <!-- 分页 -->
       <div class="paging">
-        <el-pagination background layout="prev, pager, next" :total="1000">
+        <el-pagination
+          background
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page.sync="currentPage3"
+          layout="prev, pager, next"
+          :total="100"
+        >
         </el-pagination>
       </div>
     </el-card>
   </div>
 </template>
 <script>
+// import { getChannels } from '../../api/articles'
 export default {
   name: 'articles',
   data () {
     return {
       radio: '',
-      form: {},
-      options: [
-        {
-          value: 'HTML',
-          label: 'HTML'
-        },
-        {
-          value: 'CSS',
-          label: 'CSS'
-        },
-        {
-          value: 'JavaScript',
-          label: 'JavaScript'
-        }
-      ],
+      form: {
+        channel_id: ''
+      },
+      optionsList: [],
       value: [],
       pickerOptions: {
         shortcuts: [
@@ -127,13 +132,21 @@ export default {
         ]
       },
       value1: '',
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎'
-        }
-      ]
+      tableData: []
     }
+  },
+  created () {
+    this.$request.get('mp/v1_0/channels').then(res => {
+      // window.console.log('频道', res)
+      this.optionsList = res.data.data.channels
+      this.$request.get('/mp/v1_0/articles').then(res => {
+        window.console.log('蚊帐', res)
+        this.tableData = res.data.data.results
+      })
+    })
+  },
+  methods: {
+    handleSizeChange () {}
   }
 }
 </script>
