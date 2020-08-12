@@ -9,7 +9,7 @@
       <div class="btn-box">
         <!-- tab导航栏 -->
         <el-radio-group
-          v-model="tabPosition.collect"
+          v-model="reqParams.collect"
           style="margin-bottom: 30px;"
         >
           <el-radio-button :label="false">全部</el-radio-button>
@@ -26,17 +26,27 @@
       </div>
       <!-- 列表 -->
       <div class="list-box">
-        <div class="item-box" v-for="i in 8" :key="i">
-          <img src="../../assets/avatar.jpg" alt />
+        <div class="item-box" v-for="(item, index) in list" :key="index">
+          <img :src="item.url" alt />
           <div class="option">
-            <span class="el-icon-star-off"></span>
+            <span
+              class="el-icon-star-off"
+              :class="{ red: item.is_collected }"
+            ></span>
             <span class="el-icon-delete"></span>
           </div>
         </div>
       </div>
 
       <!-- 分页 -->
-      <el-pagination background layout="prev, pager, next" :total="1000">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="total"
+        :page-size="reqParams.per_page"
+        :current-page="reqParams.page"
+        @current-change="changePager"
+      >
       </el-pagination>
     </el-card>
     <!-- 弹出框-->
@@ -49,33 +59,63 @@
         class="avatar-uploader"
         action="https://jsonplaceholder.typicode.com/posts/"
         :show-file-list="false"
-        :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload"
       >
-        <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        <!-- <img v-if="imageUrl" :src="imageUrl" class="avatar" /> -->
+        <!-- <i v-else class="el-icon-plus avatar-uploader-icon"></i> -->
       </el-upload>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import { getImages } from '../../api/image.js'
 export default {
+  created () {
+    this.getdata()
+  },
   data () {
     return {
+      // 素材列表
+      list: [],
+      //   总条数
+      total: 0,
       dialogTableVisible: false,
       dialogFormVisible: false,
       //   查询条件
-      tabPosition: {
+      reqParams: {
         //   是否查的收藏 true查询收藏  false查询全部
-        collect: false
+        collect: false,
+        page: 1,
+        per_page: 10
       }
+    }
+  },
+  methods: {
+    // 切换分页
+    changePager (newPage) {
+      this.reqParams.page = newPage
+      this.getdata()
+    },
+    getdata () {
+      const query = {
+        page: this.reqParams.page,
+        per_page:this.reqParams.per_page
+      }
+      getImages(query).then(res => {
+        //   window.console.log(res)
+        this.list = res.data.data.results
+        //   设置总条数
+        this.total = res.data.data.total_count
+      })
     }
   }
 }
 </script>
 
 <style lang="less">
+.avatar-uploader {
+  text-align: center;
+}
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
