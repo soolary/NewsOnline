@@ -1,9 +1,18 @@
 <template>
-  <div>设了个置</div>
+  <div class="setting">
+    <el-card>
+      <Breadcrumb></Breadcrumb>
+      <el-form ref="form">
+        <el-form-item></el-form-item>
+      </el-form>
+    </el-card>
+  </div>
 </template>
 
 <script>
-export default {}
+export default {
+  name: 'setting'
+}
 </script>
 
 <style></style>

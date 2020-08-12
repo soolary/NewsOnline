@@ -39,20 +39,69 @@ const routes = [
     path: '/',
     component: Layout,
     children: [
-      // Home嵌套在主页里面
-      { path: '', component: Home },
-      // 发布文章
-      { path: '/addArticle', component: addArticle },
-      // 评论
-      { path: '/comment', component: comment },
-      // 素材
-      { path: '/image', component: image },
+      {
+        // Home嵌套在主页里面
+        path: '/',
+        component: Home,
+        meta: {
+          title: '首页',
+          icon: 'el-icon-s-home'
+        }
+      },
       // 内容
-      { path: '/articles', component: articles },
+      {
+        path: '/articles',
+        component: articles,
+        meta: {
+          title: '内容管理',
+          icon: 'el-icon-document'
+        }
+      },
+      // 素材
+      {
+        path: '/image',
+        component: image,
+        meta: {
+          title: '素材管理',
+          icon: 'el-icon-picture'
+        }
+      },
+      // 发布文章
+      {
+        path: '/addArticle',
+        component: addArticle,
+        meta: {
+          title: '发布文章',
+          icon: 'el-icon-s-promotion'
+        }
+      },
+      // 评论
+      {
+        path: '/comment',
+        component: comment,
+        meta: {
+          title: '评论管理',
+          icon: 'el-icon-chat-dot-round'
+        }
+      },
       // 粉丝
-      { path: '/fans', component: fans },
+      {
+        path: '/fans',
+        component: fans,
+        meta: {
+          title: '粉丝管理',
+          icon: 'el-icon-present'
+        }
+      },
       // 设置
-      { path: '/settings', component: settings }
+      {
+        path: '/settings',
+        component: settings,
+        meta: {
+          title: '个人设置',
+          icon: 'el-icon-setting'
+        }
+      }
     ]
   },
 
@@ -88,6 +137,10 @@ router.beforeEach((to, from, next) => {
     // 如果跳转登录，直接放行
     next()
   }
+  if (to.meta.title) {
+    document.title = to.meta.title
+  }
+  next()
 })
 
 export default router
