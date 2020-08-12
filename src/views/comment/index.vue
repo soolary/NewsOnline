@@ -2,7 +2,7 @@
   <div class="comment">
     <el-crad class="box-card">
       <div slot="header">
-        <el-breadcrumb></el-breadcrumb>
+        <Breadcrumb></Breadcrumb>
       </div>
       <div class="item">
         <el-table :data="tableData" style="width: 100%">
