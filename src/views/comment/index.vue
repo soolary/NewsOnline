@@ -68,9 +68,9 @@ export default {
   name: 'comment',
   data () {
     return {
-      tableData: '',
+      tableData: [],
       comment: 'comment',
-      total: '',
+      total: 0,
       page: 1,
       allowComment: ''
     }

@@ -18,9 +18,8 @@ export const setStatus = data => {
   return axios({
     method: 'put',
     url: `/mp/v1_0/comments/status?article_id=${article_id.toString()}`,
-    data: {
-      allow_comment
-    }
+    data: { allow_comment }
+
     // headers: {
     //   ContentType: 'application/json',
     //   Authorization: `Bearer ${getUser()}`
