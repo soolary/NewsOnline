@@ -9,13 +9,17 @@
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
           <el-tab-pane label="素材库" name="first">
             <el-radio-group v-model="tabPosition" style="margin-bottom: 30px;">
-              <el-radio-button label="全部"> </el-radio-button>
-              <el-radio-button label="收藏"></el-radio-button>
+              <el-radio-button :label="0"> 全部</el-radio-button>
+              <el-radio-button :label="1">收藏</el-radio-button>
             </el-radio-group>
             <el-row :gutter="20">
-              <el-col :span="6" v-for="(item, index) in 6" :key="index">
-                <div class="grid-content"><img src="" alt="" />123</div></el-col
-              >
+              <el-col :span="4" v-for="(item, index) in 12" :key="index">
+                <div class="grid-content">
+                  <img
+                    src="https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1091579268,2185400060&fm=26&gp=0.jpg"
+                    alt=""
+                  /></div
+              ></el-col>
             </el-row>
           </el-tab-pane>
           <el-tab-pane label="上传图片" name="second">
@@ -23,6 +27,7 @@
               class="avatar-uploader"
               action="http://ttapi.research.itcast.cn/mp/v1_0/user/images"
               name="image"
+              :headers="headers"
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
@@ -35,23 +40,32 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="showone = false">取 消</el-button>
-        <el-button type="primary" @click="showone = false">确 定</el-button>
+        <el-button type="primary" @click="onensure">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import { getUser } from '@/utils/storage.js'
 export default {
   data () {
     return {
       showone: false,
       activeName: 'first',
       imageUrl: '',
-      tabPosition: '全部'
+      tabPosition: '全部',
+      headers: {
+        Authorization: `Bearer ${getUser().token}`
+      }
     }
   },
   methods: {
+    // 确定
+    onensure () {
+      this.$emit('onensure', this.imageUrl)
+      this.showone = false
+    },
     handleClick (tab, event) {
       console.log(tab, event)
     },
@@ -107,6 +121,13 @@ export default {
   }
   .avatar-uploader {
     text-align: center;
+  }
+  .grid-content {
+    width: 100px;
+    height: 104px;
+    img {
+      width: 100%;
+    }
   }
 }
 </style>

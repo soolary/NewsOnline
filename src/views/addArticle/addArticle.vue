@@ -34,13 +34,15 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item>
-          <div class="coverimg">
+          <div
+            class="coverimg"
+            v-for="(item, index) in Number(form.cover.type)"
+            :key="index"
+          >
             <img
-              src="@/assets/default.png"
+              :src="pickImag ? pickImag : defaultImage"
               alt=""
               class="cover"
-              v-for="(item, index) in +form.cover.type"
-              :key="index"
               @click="pop_up"
             />
           </div>
@@ -65,13 +67,22 @@
       </el-form>
     </el-card>
     <!-- 弹框 -->
-    <uploadingl ref="uploadingl"></uploadingl>
+    <uploadingl ref="uploadingl" @onensure="onensure"></uploadingl>
+    <img
+      src="http://localhost:8080/76983037-27c0-46aa-b92e-6cb70b85a5d9"
+      alt=""
+    />
   </div>
 </template>
 
 <script>
 // 导入接口
-import { getchannels, getarticles } from '../../api/addArticle.js'
+import {
+  getchannels,
+  getarticles,
+  getarticlestarget,
+  getarticlestatistics
+} from '../../api/addArticle.js'
 // 导入弹框
 import uploadingl from './uploadingl.vue'
 // 导入富文本框
@@ -79,6 +90,7 @@ import { quillEditor } from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
+import defaultImage from '@/assets/default.png'
 export default {
   name: 'addArticle',
   components: {
@@ -88,6 +100,8 @@ export default {
   data () {
     return {
       // 频道
+      pickImag: '',
+      defaultImage,
       channelist: [],
       form: {
         draft: false,
@@ -114,12 +128,42 @@ export default {
       console.log('补充', res)
       this.channelist = res.data.data.channels
     })
+    if (this.$route.query.id) {
+      this.getchonse()
+    }
   },
 
   methods: {
+    // 图片传值
+    onensure (img) {
+      console.log(img)
+      this.pickImag = img
+    },
+    // 获取编辑文章
+    getchonse () {
+      getarticlestatistics(this.$route.query.id).then(res => {
+        console.log('获取编辑数据', res)
+      })
+    },
     // 校验富文本
     valquillEditor (centent) {
       this.$refs.form.validateField([centent])
+    },
+    // 编辑文章
+    onredact () {
+      this.$refs.form.validate(resues => {
+        if (resues) {
+          this.form.draft = true
+          this.form.cover.type = Number(this.form.cover.type)
+          getarticlestarget(this.form, this.$route.query.id).then(res => {
+            console.log(res)
+            this.form = ''
+          })
+          this.$message.success('保存成功')
+        } else {
+          this.$message.error('验证失败')
+        }
+      })
     },
     // 草稿
     ondraft () {
@@ -129,6 +173,7 @@ export default {
           this.form.cover.type = Number(this.form.cover.type)
           getarticles(this.form).then(res => {
             console.log(res)
+            this.form = ''
           })
           this.$message.success('已存草稿')
         } else {
@@ -143,6 +188,7 @@ export default {
           this.form.cover.type = Number(this.form.cover.type)
           getarticles(this.form).then(res => {
             console.log(res)
+            this.form = ''
           })
           this.$message.success('发表成功')
         } else {
