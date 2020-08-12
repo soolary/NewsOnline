@@ -1,6 +1,6 @@
 <template>
-  <div class="">
-    主页
+  <div class="home">
+    <img src="../../assets/bg.jpg" alt="" />
   </div>
 </template>
 
@@ -21,4 +21,11 @@ export default {
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.home {
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+</style>

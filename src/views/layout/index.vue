@@ -19,7 +19,7 @@
       -->
       <el-menu
         router
-        default-active="/"
+        :default-active="$route.path"
         class="nav-menu"
         background-color="#002033"
         text-color="#fff"
@@ -27,33 +27,14 @@
         :collapse="isCollapse"
         :collapse-transition="false"
       >
-        <el-menu-item index="/">
-          <i class="el-icon-s-home"></i>
-          <span slot="title">首页</span>
-        </el-menu-item>
-        <el-menu-item index="/articles">
-          <i class="el-icon-document"></i>
-          <span slot="title">内容管理</span>
-        </el-menu-item>
-        <el-menu-item index="/image">
-          <i class="el-icon-picture"></i>
-          <span slot="title">素材管理</span>
-        </el-menu-item>
-        <el-menu-item index="/addArticle">
-          <i class="el-icon-s-promotion"></i>
-          <span slot="title">发布文章</span>
-        </el-menu-item>
-        <el-menu-item index="/comment">
-          <i class="el-icon-chat-dot-round"></i>
-          <span slot="title">评论管理</span>
-        </el-menu-item>
-        <el-menu-item index="/fans">
-          <i class="el-icon-setting"></i>
-          <span slot="title">粉丝管理</span>
-        </el-menu-item>
-        <el-menu-item index="/settings">
-          <i class="el-icon-setting"></i>
-          <span slot="title">个人设置</span>
+        <el-menu-item
+          v-for="(item, index) in routes"
+          :key="index"
+          :index="item.path"
+        >
+          <i :class="item.meta.icon"></i>
+          <!-- <span :slot="item.meta.title">个人设置</span> -->
+          <span>{{ item.meta.title }}</span>
         </el-menu-item>
       </el-menu>
     </el-aside>
@@ -66,7 +47,7 @@
             @click="isCollapse = !isCollapse"
             :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'"
           ></i>
-          <span>江苏传智播客科技教育有限公司</span>
+          <span>深圳葫芦娃救爷爷发展有限公司</span>
         </div>
 
         <el-dropdown>
@@ -112,6 +93,11 @@ export default {
   created () {
     // 组件创建完成就去调用
     this.setUserProfile()
+  },
+  computed: {
+    routes () {
+      return this.$router.options.routes[1].children
+    }
   },
   methods: {
     // 方法：设置用户信息

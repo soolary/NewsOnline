@@ -3,20 +3,21 @@
     <el-card class="box-card">
       <!-- 顶部 -->
       <div slot="header" class="clearfix">
-        <span class="shouye">首页</span>
-        <span class="el-icon-arrow-right"></span>
-        <span class="guanli">素材管理</span>
+        <Breadcrumb></Breadcrumb>
+      </div>
+      <!-- tab导航栏 -->
+      <el-radio-group v-model="tabPosition" style="margin-bottom: 30px;">
+        <el-radio-button label="全部"></el-radio-button>
+        <el-radio-button label="收藏"></el-radio-button>
+      </el-radio-group>
         <!-- 上传按钮 -->
         <el-button
-          class="anniu"
-          style="margin-left: 10px;"
+          style="margin-left: 10px; float:right;"
           size="small"
           type="success"
           @click="dialogTableVisible = true"
           >上传到服务器</el-button
         >
-      </div>
-      <!-- tab导航栏 -->
 
       <!-- 分页 -->
       <el-pagination
@@ -51,6 +52,7 @@
 export default {
   data () {
     return {
+      tabPosition: 'left',
       dialogTableVisible: false,
       dialogFormVisible: false
     }
@@ -58,7 +60,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
@@ -84,30 +86,4 @@ export default {
   /* text-align: center; */
 }
 
-.anniu {
-  background-color: #67c23a;
-  color: #fff;
-  float: right;
-}
-.tupian1 {
-  /* margin-right: 204px; */
-  width: 134px;
-  height: 134px;
-}
-.tupian2 {
-  margin-right: 204px;
-  width: 134px;
-  height: 134px;
-}
-
-.el-icon-arrow-right {
-  font-size: 18px;
-  color: #8f99ab;
-}
-.shouye {
-  font-weight: 700;
-}
-.guanli {
-  color: #8f99ab;
-}
 </style>
