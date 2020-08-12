@@ -18,6 +18,7 @@
         <!-- 父文本框 -->
         <el-form-item prop="content" label="内容">
           <quillEditor
+            :options="editorOption"
             v-model="form.content"
             @change="valquillEditor('content')"
           >
@@ -34,17 +35,8 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item>
-          <div
-            class="coverimg"
-            v-for="(item, index) in Number(form.cover.type)"
-            :key="index"
-          >
-            <img
-              :src="pickImag ? pickImag : defaultImage"
-              alt=""
-              class="cover"
-              @click="pop_up"
-            />
+          <div v-if="form.cover.type === 1" style="width:100px">
+            <uploadingl v-model="form.cover.images[0]"></uploadingl>
           </div>
         </el-form-item>
         <el-form-item label="频道" prop="channel_id">
@@ -66,12 +58,7 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <!-- 弹框 -->
-    <uploadingl ref="uploadingl" @onensure="onensure"></uploadingl>
-    <img
-      src="http://localhost:8080/76983037-27c0-46aa-b92e-6cb70b85a5d9"
-      alt=""
-    />
+    <uploadingl></uploadingl>
   </div>
 </template>
 
@@ -90,7 +77,6 @@ import { quillEditor } from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
-import defaultImage from '@/assets/default.png'
 export default {
   name: 'addArticle',
   components: {
@@ -100,8 +86,6 @@ export default {
   data () {
     return {
       // 频道
-      pickImag: '',
-      defaultImage,
       channelist: [],
       form: {
         draft: false,
@@ -119,6 +103,18 @@ export default {
           { required: true, message: '请输入频道', trigger: 'change' }
         ],
         content: [{ required: true, message: '请选择内容', trigger: 'change' }]
+      },
+      editorOption: {
+        placeholder: '请在这里输入........',
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'code'],
+            [{ header: 1 }, { header: 2 }],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            [{ indent: '-1' }, { indent: '+1' }],
+            ['image']
+          ]
+        }
       }
     }
   },
@@ -195,10 +191,6 @@ export default {
           this.$message.error('验证失败')
         }
       })
-    },
-    // 弹窗
-    pop_up () {
-      this.$refs.uploadingl.showone = true
     }
   }
 }
@@ -221,18 +213,6 @@ export default {
       .ql-editor,
       .ql-blank {
         height: 300px;
-      }
-      .coverimg {
-        display: flex;
-        justify-content: left;
-
-        .cover {
-          display: block;
-          width: 155px;
-          height: 155px;
-          border: 1px dotted #ccc;
-          margin-right: 100px;
-        }
       }
     }
   }

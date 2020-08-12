@@ -30,5 +30,19 @@ function getarticlestatistics (article_id) {
     method: 'get'
   })
 }
+// 获取用户图片素材
+function getuserimages (params) {
+  return instance({
+    url: 'mp/v1_0/user/images',
+    method: 'get',
+    params
+  })
+}
 
-export { getchannels, getarticles, getarticlestarget, getarticlestatistics }
+export {
+  getchannels,
+  getarticles,
+  getarticlestarget,
+  getarticlestatistics,
+  getuserimages
+}
