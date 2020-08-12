@@ -1,6 +1,11 @@
 <template>
   <div class="setting">
-    <Breadcrumb></Breadcrumb>
+    <el-card>
+      <Breadcrumb></Breadcrumb>
+      <el-form ref="form">
+        <el-form-item></el-form-item>
+      </el-form>
+    </el-card>
   </div>
 </template>
 
