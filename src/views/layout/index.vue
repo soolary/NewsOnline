@@ -29,6 +29,7 @@
       >
         <el-menu-item
           v-for="(item, index) in routes"
+          v-show="item.meta.title !== '编辑文章'"
           :key="index"
           :index="item.path"
         >
@@ -107,7 +108,9 @@ export default {
   },
   computed: {
     routes () {
-      return this.$router.options.routes[1].children
+      return this.$router.options.routes[1].children.filter(
+        item => item.isShow === true
+      )
     }
   },
   methods: {
