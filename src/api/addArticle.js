@@ -18,7 +18,7 @@ function getarticles (data) {
 // 编辑文章
 function getarticlestarget (data, target) {
   return instance({
-    url: `mp/v1_0/articles/:${target}`,
+    url: `mp/v1_0/articles/${target}`,
     method: 'put',
     data
   })
@@ -26,7 +26,7 @@ function getarticlestarget (data, target) {
 // 编辑文章
 function getarticlestatistics (article_id) {
   return instance({
-    url: `mp/v1_0/statistics/articles/:${article_id}`,
+    url: `mp/v1_0/articles/${article_id}`,
     method: 'get'
   })
 }

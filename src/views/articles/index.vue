@@ -218,7 +218,7 @@ export default {
     },
     editArticle (id) {
       id = id.toString()
-      this.$router.push(`/addArticle/${id}`)
+      this.$router.push(`/editArticle/${id}`)
     }
   },
   created () {

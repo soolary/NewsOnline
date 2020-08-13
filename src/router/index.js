@@ -72,7 +72,7 @@ const routes = [
       },
       // 发布文章
       {
-        path: '/addArticle/:id',
+        path: '/addArticle',
         component: addArticle,
         isShow: true,
         meta: {
@@ -82,7 +82,7 @@ const routes = [
       },
       // 编辑文章
       {
-        path: '/eaated:id',
+        path: '/editArticle/:id',
         component: addArticle,
         meta: {
           title: '编辑文章'

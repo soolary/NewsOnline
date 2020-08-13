@@ -68,7 +68,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="$route.query.id">
+        <el-form-item v-if="$route.params.id">
           <el-button type="primary" @click="onredact">保存</el-button>
         </el-form-item>
         <el-form-item v-else>
@@ -103,7 +103,23 @@ export default {
     quillEditor,
     uploadingl
   },
-
+  // 侦听器
+  watch: {
+    '$route.path' () {
+      this.form = {
+        title: '',
+        content: '',
+        channel_id: '',
+        cover: {
+          type: '',
+          images: []
+        }
+      }
+      this.$nextTick(() => {
+        this.$refs.form.clearValidate()
+      })
+    }
+  },
   data () {
     return {
       // 频道
@@ -157,7 +173,7 @@ export default {
       console.log('补充', res)
       this.channelist = res.data.data.channels
     })
-    if (this.$route.query.id) {
+    if (this.$route.params.id) {
       this.getchonse()
     }
   },
@@ -175,8 +191,11 @@ export default {
     },
     // 获取编辑文章
     getchonse () {
-      getarticlestatistics(this.$route.query.id).then(res => {
+      const id = this.$route.params.id.split(':')[0]
+      console.log(id)
+      getarticlestatistics(id).then(res => {
         console.log('获取编辑数据', res)
+        this.form = res.data.data
       })
     },
 
@@ -186,11 +205,22 @@ export default {
         if (resues) {
           this.form.draft = true
           this.form.cover.type = Number(this.form.cover.type)
-          getarticlestarget(this.form, this.$route.query.id).then(res => {
+          const id = this.$route.params.id.split(':')[0]
+          getarticlestarget(this.form, id).then(res => {
             console.log(res)
             this.$refs.form.resetFields()
             if (res.status === 201) {
+              this.$router.go(-1)
               this.$message.success('保存成功')
+              this.form = {
+                title: '',
+                content: '',
+                channel_id: '',
+                cover: {
+                  type: '',
+                  images: []
+                }
+              }
             }
           })
         } else {
@@ -230,24 +260,26 @@ export default {
       this.$refs.form.validate(resues => {
         if (resues) {
           this.form.cover.type = Number(this.form.cover.type)
-          getarticles(this.form).then(res => {
-            console.log('发表', res)
-            if (res.status === 201) {
-              this.$refs.form.resetFields()
-              this.$message.success('发表成功')
-              this.form = {
-                title: '',
-                content: '',
-                channel_id: '',
-                cover: {
-                  type: '',
-                  images: []
+          getarticles(this.form)
+            .then(res => {
+              console.log('发表', res)
+              if (res.status === 201) {
+                this.$refs.form.resetFields()
+                this.$message.success('发表成功')
+                this.form = {
+                  title: '',
+                  content: '',
+                  channel_id: '',
+                  cover: {
+                    type: '',
+                    images: []
+                  }
                 }
               }
-            } else if (res.status === 400) {
+            })
+            .catch(() => {
               this.$message.error('请检查好你的图片数量')
-            }
-          })
+            })
         } else {
           this.$message.error('验证失败')
         }
