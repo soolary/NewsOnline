@@ -7,4 +7,14 @@ function getImages (params) {
     params
   })
 }
-export { getImages }
+// 删除图片
+function delImages (data) {
+  const { target } = data
+  return instance({
+    url: `/mp/v1_0/user/images/${target}`,
+    method: 'DELETE',
+    data
+  })
+}
+
+export { getImages, delImages }
