@@ -81,7 +81,8 @@
 
 <script>
 import { userGetProfile } from '../../api/user.js'
-import { delUser } from '../../utils/storage.js'
+import { delUser, getUser } from '../../utils/storage.js'
+import eventBus from '@/eventBus.js'
 export default {
   name: 'Layout',
   data () {
@@ -93,6 +94,14 @@ export default {
   created () {
     // 组件创建完成就去调用
     this.setUserProfile()
+    const { name, photo } = getUser()
+    this.user = { name, photo }
+    eventBus.$on('updateUserName', data => {
+      this.user.name = data
+    })
+    eventBus.$on('updateUserPhoto', data => {
+      this.user.photo = data
+    })
   },
   computed: {
     routes () {
@@ -111,11 +120,11 @@ export default {
         .catch(err => {
           console.dir(err)
           // 401表示没有权限
-          if (err.response.status === 401) {
-            //
-            alert('无权访问')
-            this.$router.push('/login')
-          }
+          // if (err.response.status === 401) {
+          //   //
+          //   alert('无权访问')
+          //   this.$router.push('/login')
+          // }
         })
     },
     // 退出功能
