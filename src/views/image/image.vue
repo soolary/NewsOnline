@@ -11,6 +11,8 @@
         <el-radio-group
           v-model="reqParams.collect"
           style="margin-bottom: 30px;"
+          @change="toggleList()"
+          size="small"
         >
           <el-radio-button :label="false">全部</el-radio-button>
           <el-radio-button :label="true">收藏</el-radio-button>
@@ -28,12 +30,13 @@
       <div class="list-box">
         <div class="item-box" v-for="(item, index) in list" :key="index">
           <img :src="item.url" alt />
-          <div class="option">
+          <div class="option" v-if="!reqParams.collect">
             <span
+              @click="clo(item)"
               class="el-icon-star-off"
               :class="{ red: item.is_collected }"
             ></span>
-            <span class="el-icon-delete"></span>
+            <span @click="del(item.id)" class="el-icon-delete"></span>
           </div>
         </div>
       </div>
@@ -64,11 +67,15 @@
         <!-- <i v-else class="el-icon-plus avatar-uploader-icon"></i> -->
       </el-upload>
     </el-dialog>
+    <!-- <div class="option" v-if="!reqParams.collect">
+      <span class="el-icon-star-off" :class="{ red: item.is_collected }"></span>
+      <span class="el-icon-delete"></span>
+    </div> -->
   </div>
 </template>
 
 <script>
-import { getImages } from '../../api/image.js'
+import { getImages, delImages } from '../../api/image.js'
 export default {
   created () {
     this.getdata()
@@ -91,21 +98,46 @@ export default {
     }
   },
   methods: {
+    // 切换全部和收藏
+    toggleList () {
+      this.reqParams.page = 1
+      this.getdata()
+    },
     // 切换分页
     changePager (newPage) {
       this.reqParams.page = newPage
       this.getdata()
     },
+    // 封装获取数据
     getdata () {
       const query = {
         page: this.reqParams.page,
-        per_page:this.reqParams.per_page
+        per_page: this.reqParams.per_page
       }
       getImages(query).then(res => {
         //   window.console.log(res)
         this.list = res.data.data.results
         //   设置总条数
         this.total = res.data.data.total_count
+      })
+    },
+    // 删除素材
+    del (id) {
+      console.log(id)
+      // 确认框
+      this.$confirm('此操作将永久删除该图片素材, 是否继续?', '温馨提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        delImages({ target: id.toString() }).then(res => {
+          console.log(res)
+          this.getdata()
+        })
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
       })
     }
   }
