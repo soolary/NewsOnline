@@ -189,6 +189,7 @@ export default {
       window.setTimeout(() => {
         this.dialogTableVisible = false
         this.getdata()
+        this.imageUrl = ''
       }, 3000)
     },
     // 上传前处理
