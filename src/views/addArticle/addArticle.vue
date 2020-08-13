@@ -17,11 +17,7 @@
         </el-form-item>
         <!-- 父文本框 -->
         <el-form-item prop="content" label="内容">
-          <quillEditor
-            :options="editorOption"
-            v-model="form.content"
-            @change="valquillEditor('content')"
-          >
+          <quillEditor :options="editorOption" v-model="form.content">
           </quillEditor>
         </el-form-item>
 
@@ -31,8 +27,31 @@
             <el-radio label="1">单图</el-radio>
             <el-radio label="3">三图</el-radio>
             <el-radio label="0">无图</el-radio>
-            <el-radio label="">自动</el-radio>
+            <el-radio label="-1">自动</el-radio>
           </el-radio-group>
+          <div class="cover-image">
+            <img
+              :src="form.cover.images[0] ? form.cover.images[0] : defaultImage"
+              alt=""
+              v-show="form.cover.type == 1 || form.cover.type == 3"
+              class="cover"
+              @click="pop_up(0)"
+            />
+            <img
+              :src="form.cover.images[1] ? form.cover.images[1] : defaultImage"
+              alt=""
+              v-show="form.cover.type == 3"
+              class="cover"
+              @click="pop_up(1)"
+            />
+            <img
+              :src="form.cover.images[2] ? form.cover.images[2] : defaultImage"
+              alt=""
+              v-show="form.cover.type == 3"
+              class="cover"
+              @click="pop_up(2)"
+            />
+          </div>
         </el-form-item>
         <el-form-item>
           <div v-if="form.cover.type === 1" style="width:100px">
@@ -58,7 +77,7 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <uploadingl></uploadingl>
+    <uploadingl ref="uploadingl" @onensure="onensure"> </uploadingl>
   </div>
 </template>
 
@@ -77,15 +96,19 @@ import { quillEditor } from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
+import defaultImage from '@/assets/default.png'
 export default {
   name: 'addArticle',
   components: {
     quillEditor,
     uploadingl
   },
+
   data () {
     return {
       // 频道
+      cindeindex: 0,
+      defaultImage,
       channelist: [],
       form: {
         draft: false,
@@ -97,19 +120,28 @@ export default {
           images: []
         }
       },
+      // 表单校验
       rules: {
-        title: [{ required: true, message: '请输入标题', trigger: 'change' }],
-        channel_id: [
-          { required: true, message: '请输入频道', trigger: 'change' }
+        title: [
+          { required: true, message: '请输入标题', trigger: 'change' },
+          {
+            min: 6,
+            max: 12,
+            message: '标题长度在 6 到 12个字符',
+            trigger: 'change'
+          }
         ],
-        content: [{ required: true, message: '请选择内容', trigger: 'change' }]
+        channel_id: [
+          { required: true, message: '请选择频道', trigger: 'change' }
+        ],
+        content: [{ required: true, message: '请输入内容', trigger: 'change' }]
       },
       // 富文本框自定义
       editorOption: {
         placeholder: '请在这里输入........',
         modules: {
           toolbar: [
-            ['bold', 'italic', 'code'],
+            ['bold', 'italic', 'blockquote', 'code'],
             [{ header: 1 }, { header: 2 }],
             [{ list: 'ordered' }, { list: 'bullet' }],
             [{ indent: '-1' }, { indent: '+1' }],
@@ -131,10 +163,15 @@ export default {
   },
 
   methods: {
+    // 弹窗
+    pop_up (index) {
+      this.$refs.uploadingl.showone = true
+      this.cindeindex = index
+    },
     // 图片传值
     onensure (img) {
       console.log(img)
-      this.pickImag = img
+      this.$set(this.form.cover.images, this.cindeindex, img)
     },
     // 获取编辑文章
     getchonse () {
@@ -142,10 +179,7 @@ export default {
         console.log('获取编辑数据', res)
       })
     },
-    // 校验富文本
-    valquillEditor (centent) {
-      this.$refs.form.validateField([centent])
-    },
+
     // 编辑文章
     onredact () {
       this.$refs.form.validate(resues => {
@@ -154,9 +188,11 @@ export default {
           this.form.cover.type = Number(this.form.cover.type)
           getarticlestarget(this.form, this.$route.query.id).then(res => {
             console.log(res)
-            this.form = ''
+            this.$refs.form.resetFields()
+            if (res.status === 201) {
+              this.$message.success('保存成功')
+            }
           })
-          this.$message.success('保存成功')
         } else {
           this.$message.error('验证失败')
         }
@@ -170,9 +206,20 @@ export default {
           this.form.cover.type = Number(this.form.cover.type)
           getarticles(this.form).then(res => {
             console.log(res)
-            this.form = ''
+            if (res.status === 201) {
+              this.$refs.form.resetFields()
+              this.$message.success('已存草稿')
+              this.form = {
+                title: '',
+                content: '',
+                channel_id: '',
+                cover: {
+                  type: '',
+                  images: []
+                }
+              }
+            }
           })
-          this.$message.success('已存草稿')
         } else {
           this.$message.error('验证失败')
         }
@@ -184,10 +231,23 @@ export default {
         if (resues) {
           this.form.cover.type = Number(this.form.cover.type)
           getarticles(this.form).then(res => {
-            console.log(res)
-            this.form = ''
+            console.log('发表', res)
+            if (res.status === 201) {
+              this.$refs.form.resetFields()
+              this.$message.success('发表成功')
+              this.form = {
+                title: '',
+                content: '',
+                channel_id: '',
+                cover: {
+                  type: '',
+                  images: []
+                }
+              }
+            } else if (res.status === 400) {
+              this.$message.error('请检查好你的图片数量')
+            }
           })
-          this.$message.success('发表成功')
         } else {
           this.$message.error('验证失败')
         }
@@ -214,6 +274,18 @@ export default {
       .ql-editor,
       .ql-blank {
         height: 300px;
+      }
+      .cover-image {
+        margin-top: 20px;
+        display: flex;
+        justify-content: left;
+        .cover {
+          display: block;
+          width: 155px;
+          height: 155px;
+          border: 1px dotted #ccc;
+          margin-right: 100px;
+        }
       }
     }
   }

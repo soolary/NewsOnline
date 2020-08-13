@@ -1,9 +1,7 @@
 <template>
   <div class="uploadingl">
-    <!-- <div class="coverimg">
-      <img :src="value || defaultImage" alt="" class="cover" @click="pop_up" />
-    </div> -->
     <el-dialog
+      @closed="onclosed"
       :visible.sync="showone"
       width="720px"
       :modal-append-to-body="false"
@@ -20,8 +18,12 @@
               <el-radio-button :label="1">收藏</el-radio-button>
             </el-radio-group>
             <el-row :gutter="20">
-              <el-col :span="4" v-for="item in listimg" :key="item.id">
-                <div class="grid-content">
+              <el-col :span="4" v-for="(item, index) in listimg" :key="item.id">
+                <div
+                  class="grid-content"
+                  @click="onclick(index)"
+                  :class="{ mask: index === current }"
+                >
                   <img :src="item.url" alt="" /></div
               ></el-col>
             </el-row>
@@ -31,7 +33,6 @@
               layout="prev, pager, next"
               @current-change="handleCurrentChange"
               :total="total"
-              v-if="total > 1"
             >
             </el-pagination>
           </el-tab-pane>
@@ -44,6 +45,7 @@
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
+              ref="upload"
             >
               <img v-if="imageUrl" :src="imageUrl" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -63,7 +65,6 @@
 // 导入接口
 import { getuserimages } from '../../api/addArticle.js'
 import { getUser } from '@/utils/storage.js'
-import defaultImage from '@/assets/default.png'
 export default {
   props: ['value'],
   data () {
@@ -73,11 +74,11 @@ export default {
       total: 1,
       per_page: 12,
       listimg: [],
-      defaultImage,
-      showone: true,
+      showone: false,
       activeName: 'first',
       imageUrl: '',
       tabPosition: '0',
+      current: '',
       headers: {
         Authorization: `Bearer ${getUser().token}`
       }
@@ -87,6 +88,13 @@ export default {
     this.getpage()
   },
   methods: {
+    // 点击图片
+    onclick (index) {
+      console.log(index)
+      this.imageUrl = this.listimg[index].url
+      this.current = index
+      // this.aftern = true
+    },
     handleCurrentChange (val) {
       this.page = val
       this.getpage()
@@ -103,21 +111,24 @@ export default {
         this.total = res.data.data.total_count
       })
     },
-    // 弹窗
-    pop_up () {
-      this.showone = true
+    // 清除
+    onclosed () {
+      this.imageUrl = ''
+      this.current = ''
     },
     // 确定
     onensure () {
-      this.$emit('input', this.imageUrl)
+      this.$emit('onensure', this.imageUrl)
       this.showone = false
+      this.$refs.upload.clearFiles()
     },
     handleClick (tab, event) {
       console.log(tab, event)
     },
     // 图片上传
     handleAvatarSuccess (res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      this.imageUrl = res.data.url
+      console.log(res)
     },
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg'
@@ -141,18 +152,6 @@ export default {
   //   display: -webkit-box;
   //   -webkit-line-clamp: 2;
   // }
-  .coverimg {
-    display: flex;
-    justify-content: left;
-
-    .cover {
-      display: block;
-      width: 155px;
-      height: 155px;
-      border: 1px dotted #ccc;
-      margin-right: 100px;
-    }
-  }
   .el-dialog__footer {
     .dialog-footer {
       text-align: right;
@@ -187,19 +186,22 @@ export default {
   .grid-content {
     width: 100px;
     height: 104px;
+    margin-bottom: 15px;
+    position: relative;
     img {
       width: 100%;
+      height: 100%;
     }
   }
-  // position: relative;
-  // .aftern {
-  //   position: absolute;
-  //   left: 0;
-  //   top: 0;
-  //   width: 100%;
-  //   height: 100%;
-  //   background: rgba(0, 0, 0, 0.3) url('@/assets/selected.png') no-repeat 50%
-  //     50px 50px;
-  // }
+  .mask::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3) url('../../assets/selected.png') no-repeat;
+    background-size: 100%;
+  }
 }
 </style>

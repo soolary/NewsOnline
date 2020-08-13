@@ -76,6 +76,14 @@ const routes = [
           icon: 'el-icon-s-promotion'
         }
       },
+      // 编辑文章
+      {
+        path: '/eaated:id',
+        component: addArticle,
+        meta: {
+          title: '编辑文章'
+        }
+      },
       // 评论
       {
         path: '/comment',
