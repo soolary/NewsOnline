@@ -44,7 +44,6 @@ const routes = [
         // Home嵌套在主页里面
         path: '/',
         component: Home,
-        isShow: true,
         meta: {
           title: '首页',
           icon: 'el-icon-s-home'
@@ -54,7 +53,6 @@ const routes = [
       {
         path: '/articles',
         component: articles,
-        isShow: true,
         meta: {
           title: '内容管理',
           icon: 'el-icon-document'
@@ -64,7 +62,6 @@ const routes = [
       {
         path: '/image',
         component: image,
-        isShow: true,
         meta: {
           title: '素材管理',
           icon: 'el-icon-picture'
@@ -74,7 +71,6 @@ const routes = [
       {
         path: '/addArticle',
         component: addArticle,
-        isShow: true,
         meta: {
           title: '发布文章',
           icon: 'el-icon-s-promotion'
@@ -92,7 +88,6 @@ const routes = [
       {
         path: '/comment',
         component: comment,
-        isShow: true,
         meta: {
           title: '评论管理',
           icon: 'el-icon-chat-dot-round'
@@ -102,7 +97,6 @@ const routes = [
       {
         path: '/fans',
         component: fans,
-        isShow: true,
         meta: {
           title: '粉丝管理',
           icon: 'el-icon-present'
@@ -112,7 +106,6 @@ const routes = [
       {
         path: '/settings',
         component: settings,
-        isShow: true,
         meta: {
           title: '个人设置',
           icon: 'el-icon-setting'
