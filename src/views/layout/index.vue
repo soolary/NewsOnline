@@ -59,7 +59,9 @@
           </div>
           <!-- 具名插槽：设置下拉菜单的内容 -->
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>设置</el-dropdown-item>
+            <el-dropdown-item @click.native="$router.push('/settings')"
+              >设置</el-dropdown-item
+            >
             <!--
               并不是所有的组件都支持@click
               el-button组件支持@click是因为它内部自己做了处理。
