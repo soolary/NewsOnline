@@ -11,7 +11,7 @@
         <el-radio-group
           v-model="reqParams.collect"
           style="margin-bottom: 30px;"
-          @change="toggleList()"
+          @change="toggleList"
           size="small"
         >
           <el-radio-button :label="false">全部</el-radio-button>
@@ -28,11 +28,11 @@
       </div>
       <!-- 列表 -->
       <div class="list-box">
-        <div class="item-box" v-for="(item, index) in list" :key="index">
+        <div class="item-box" v-for="(item, index) in images" :key="index">
           <img :src="item.url" alt />
           <div class="option" v-if="!reqParams.collect">
             <span
-              @click="clo(item)"
+              @click="toggleStatus(item)"
               class="el-icon-star-off"
               :class="{ red: item.is_collected }"
             ></span>
@@ -40,12 +40,22 @@
           </div>
         </div>
       </div>
+      <!-- <div v-else class="list-box">
+        <div
+          class="item-box"
+          v-for="(item, index) in collectImage"
+          :key="index"
+        >
+          <img :src="item.url" alt />
+        </div>
+      </div> -->
 
       <!-- 分页 -->
       <el-pagination
         background
         layout="prev, pager, next"
         :total="total"
+        hide-on-single-page
         :page-size="reqParams.per_page"
         :current-page="reqParams.page"
         @current-change="changePager"
@@ -60,41 +70,47 @@
     >
       <el-upload
         class="avatar-uploader"
-        action="https://jsonplaceholder.typicode.com/posts/"
+        :action="uploadUrl"
+        :headers="headers"
+        name="image"
+        :on-success="handleAvatarSuccess"
+        :before-upload="beforeAvatarUpload"
         :show-file-list="false"
       >
-        <!-- <img v-if="imageUrl" :src="imageUrl" class="avatar" /> -->
-        <!-- <i v-else class="el-icon-plus avatar-uploader-icon"></i> -->
+        <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
     </el-dialog>
-    <!-- <div class="option" v-if="!reqParams.collect">
-      <span class="el-icon-star-off" :class="{ red: item.is_collected }"></span>
-      <span class="el-icon-delete"></span>
-    </div> -->
   </div>
 </template>
 
 <script>
-import { getImages, delImages } from '../../api/image.js'
+import { getImages, delImages, colImages } from '../../api/image.js'
+import { getUser } from '@/utils/storage.js'
 export default {
+  name: 'images',
   created () {
     this.getdata()
   },
   data () {
     return {
-      // 素材列表
-      list: [],
+      imageUrl: '',
       //   总条数
+      uploadUrl: 'http://ttapi.research.itcast.cn/mp/v1_0/user/images',
       total: 0,
       dialogTableVisible: false,
-      dialogFormVisible: false,
       //   查询条件
       reqParams: {
         //   是否查的收藏 true查询收藏  false查询全部
         collect: false,
         page: 1,
         per_page: 10
-      }
+      },
+      //   素材列表
+      images: [],
+      //   collectImages: [],
+      //   collectImage: [],
+      headers: { Authorization: `Bearer ${getUser().token}` }
     }
   },
   methods: {
@@ -112,12 +128,14 @@ export default {
     getdata () {
       const query = {
         page: this.reqParams.page,
-        per_page: this.reqParams.per_page
+        per_page: this.reqParams.per_page,
+        collect: this.reqParams.collect
       }
       getImages(query).then(res => {
-        //   window.console.log(res)
-        this.list = res.data.data.results
-        //   设置总条数
+        window.console.log(res)
+        this.images = res.data.data.results
+
+        //   设置总条数results.length
         this.total = res.data.data.total_count
       })
     },
@@ -139,6 +157,57 @@ export default {
           message: '删除成功!'
         })
       })
+    },
+    // 进行 添加收藏||取消收藏
+    toggleStatus (item) {
+      //   console.log(item)
+      // （将要）修改后的状态
+      const updatedStatus = !item.is_collected
+      // 发请求
+      colImages({
+        // 和当前图片状态取反即可，当前已收藏--->取消收藏  当前未收藏--->添加收藏
+        target: item.id,
+
+        collect: updatedStatus
+      }).then(res => {
+        console.log('res', res)
+      })
+      // 成功提示
+      this.$message.success(updatedStatus ? '添加收藏成功' : '取消收藏成功')
+      // 根据修改后的状态去改 星星的颜色，修改图片数据对应的状态is_collected即可
+      item.is_collected = updatedStatus
+    },
+    // 上传成功处理
+    handleAvatarSuccess (res, file) {
+      //   console.log('1' + res)
+      //   uplImages().then(res => {
+      //     console.log('2' + res)
+      //   })
+      console.log(file)
+      this.imageUrl = URL.createObjectURL(file.raw)
+      this.$message.success('上传素材成功')
+      window.setTimeout(() => {
+        this.dialogTableVisible = false
+        this.getdata()
+      }, 3000)
+    },
+    // 上传前处理
+    beforeAvatarUpload (file) {
+      console.log(file)
+      const isJPG =
+        file.type === 'image/jpg' ||
+        file.type === 'image/jpeg' ||
+        file.type === 'image/png'
+
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
     }
   }
 }
@@ -206,5 +275,28 @@ export default {
       }
     }
   }
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>
