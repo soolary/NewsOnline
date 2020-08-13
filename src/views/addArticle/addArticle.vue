@@ -104,6 +104,7 @@ export default {
         ],
         content: [{ required: true, message: '请选择内容', trigger: 'change' }]
       },
+      // 富文本框自定义
       editorOption: {
         placeholder: '请在这里输入........',
         modules: {

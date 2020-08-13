@@ -9,7 +9,6 @@
       :modal-append-to-body="false"
     >
       <div>
-        {{ tabPosition }}
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
           <el-tab-pane label="素材库" name="first">
             <el-radio-group
@@ -32,6 +31,7 @@
               layout="prev, pager, next"
               @current-change="handleCurrentChange"
               :total="total"
+              v-if="total > 1"
             >
             </el-pagination>
           </el-tab-pane>
