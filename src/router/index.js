@@ -69,7 +69,7 @@ const routes = [
       },
       // 发布文章
       {
-        path: '/addArticle',
+        path: '/addArticle/:id',
         component: addArticle,
         meta: {
           title: '发布文章',

@@ -82,7 +82,7 @@
               type="primary"
               icon="el-icon-edit"
               circle
-              @click="$router.push(`/addArticle/${scope.row.id}`)"
+              @click="editArticle(scope.row.id)"
             ></el-button>
             <el-button
               type="danger"
@@ -215,6 +215,10 @@ export default {
         this.page = res.data.data.page
         this.total = res.data.data.total_count
       })
+    },
+    editArticle (id) {
+      id = id.toString()
+      this.$router.push(`/addArticle/${id}`)
     }
   },
   created () {
