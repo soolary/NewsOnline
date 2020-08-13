@@ -1,20 +1,27 @@
 <template>
-  <div class=''>
-    404
+  <div class="error">
+    <img src="../../assets/404.png" alt="" />
   </div>
 </template>
 
 <script>
 export default {
   name: 'NotFound',
-  props: { },
+  props: {},
   data () {
-    return { }
+    return {}
   },
-  computed: { },
-  created () { },
-  mounted () { }
+  computed: {},
+  created () {},
+  mounted () {}
 }
 </script>
 
-<style scoped lang='less'></style>
+<style scoped lang="less">
+.error {
+  img {
+    height: 100vh;
+    width: 100%;
+  }
+}
+</style>
