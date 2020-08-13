@@ -1,6 +1,6 @@
 <template>
   <div class="comment">
-    <el-crad class="box-card">
+    <el-card class="box-card">
       <div slot="header">
         <Breadcrumb></Breadcrumb>
       </div>
@@ -59,7 +59,7 @@
         >
         </el-pagination>
       </div>
-    </el-crad>
+    </el-card>
   </div>
 </template>
 <script>
@@ -117,12 +117,12 @@ export default {
   .box-card {
     width: 100%;
   }
-  .el-breadcrumb {
-    padding-top: 15px;
-    padding-left: 15px;
-    height: 50px;
-    line-height: 50px;
-    border-bottom: 1px solid #ebeef5;
-  }
+  // .el-breadcrumb {
+  //   padding-top: 15px;
+  //   padding-left: 15px;
+  //   height: 50px;
+  //   line-height: 50px;
+  //   border-bottom: 1px solid #ebeef5;
+  // }
 }
 </style>

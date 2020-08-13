@@ -1,48 +1,56 @@
 <template>
   <div class="fans">
-    <Breadcrumb></Breadcrumb>
-    <div class="title">
-      <el-tabs type="card" @tab-click="handleClick" v-model="activeName">
-        <el-tab-pane label="粉丝列表" name="first">
-          <div class="main-box">
-            <el-row v-for="(item, index) in fansList" :key="index">
-              <el-col>
-                <el-card :body-style="{ padding: '0px' }">
-                  <img :src="item.photo" class="image" />
-                  <div style="padding: 14px;">
-                    <span>{{ item.name }}</span>
-                    <div class="bottom clearfix">
-                      <time class="time"></time>
-                      <el-button type="primary" plain size="small"
-                        >+关注</el-button
-                      >
+    <el-card>
+      <div slot="header">
+        <Breadcrumb></Breadcrumb>
+      </div>
+      <div class="title">
+        <el-tabs type="card" @tab-click="handleClick" v-model="activeName">
+          <el-tab-pane label="粉丝列表" name="first">
+            <div class="main-box">
+              <el-row v-for="(item, index) in fansList" :key="index">
+                <el-col>
+                  <el-card :body-style="{ padding: '0px' }">
+                    <img :src="item.photo" class="image" />
+                    <div style="padding: 14px;">
+                      <span>{{ item.name }}</span>
+                      <div class="bottom clearfix">
+                        <time class="time"></time>
+                        <el-button type="primary" plain size="small"
+                          >+关注</el-button
+                        >
+                      </div>
                     </div>
-                  </div>
-                </el-card>
-              </el-col>
-            </el-row>
-          </div>
-          <div class="foot">
-            <el-pagination
-              background
-              layout="prev, pager, next"
-              :total="110"
-              @current-change="handleCurrentChange"
-              :current-page.sync="pagination.currentPage"
-            >
-            </el-pagination>
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="粉丝画像" name="second" @click.native="getEcharts">
-          <div
-            ref="charts"
-            class="charts"
-            style="width: 600px;height:400px;"
-            v-show="isShowImg"
-          ></div>
-        </el-tab-pane>
-      </el-tabs>
-    </div>
+                  </el-card>
+                </el-col>
+              </el-row>
+            </div>
+            <div class="foot">
+              <el-pagination
+                background
+                layout="prev, pager, next"
+                :total="110"
+                @current-change="handleCurrentChange"
+                :current-page.sync="pagination.currentPage"
+              >
+              </el-pagination>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane
+            label="粉丝画像"
+            name="second"
+            @click.native="getEcharts"
+          >
+            <div
+              ref="charts"
+              class="charts"
+              style="width: 600px;height:400px;"
+              v-show="isShowImg"
+            ></div>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+    </el-card>
   </div>
 </template>
 
@@ -139,11 +147,11 @@ export default {
 
 <style lang="less">
 .fans {
-  width: 1279px;
-  background-color: #fff;
-  padding: 15px;
+  // width: 1279px;
+  // background-color: #fff;
+  // padding: 15px;
   .title {
-    margin-top: 30px;
+    // margin-top: 30px;
     background-color: #fff;
   }
   .main-box {
