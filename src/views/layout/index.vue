@@ -108,9 +108,7 @@ export default {
   },
   computed: {
     routes () {
-      return this.$router.options.routes[1].children.filter(
-        item => item.isShow === true
-      )
+      return this.$router.options.routes[1].children
     }
   },
   methods: {
