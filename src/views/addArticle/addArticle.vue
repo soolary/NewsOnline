@@ -23,7 +23,7 @@
 
         <!-- 封面 -->
         <el-form-item label="封面" prop="cover">
-          <el-radio-group v-model="form.cover.type">
+          <el-radio-group v-model="form.cover.type" @change="getpage">
             <el-radio label="1">单图</el-radio>
             <el-radio label="3">三图</el-radio>
             <el-radio label="0">无图</el-radio>
@@ -205,6 +205,10 @@ export default {
   },
 
   methods: {
+    // 点击切换单图
+    getpage () {
+      this.form.cover.images = []
+    },
     // 弹窗
     pop_up (index) {
       this.$refs.uploadingl.showone = true
