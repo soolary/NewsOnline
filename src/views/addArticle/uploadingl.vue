@@ -1,5 +1,13 @@
 <template>
   <div class="uploadingl">
+    <div>
+      <img
+        :src="value || defaultImage"
+        alt=""
+        class="defaultImg"
+        @click="pop_up"
+      />
+    </div>
     <el-dialog
       @closed="onclosed"
       :visible.sync="showone"
@@ -14,7 +22,7 @@
               style="margin-bottom: 30px;"
               @change="getpage"
             >
-              <el-radio-button :label="0"> 全部</el-radio-button>
+              <el-radio-button :label="0">全部</el-radio-button>
               <el-radio-button :label="1">收藏</el-radio-button>
             </el-radio-group>
             <el-row :gutter="20">
@@ -29,9 +37,11 @@
             </el-row>
             <!-- 分页 -->
             <el-pagination
+              v-if="total > 12"
               background
               layout="prev, pager, next"
               @current-change="handleCurrentChange"
+              :current-page.sync="page"
               :total="total"
             >
             </el-pagination>
@@ -65,43 +75,60 @@
 // 导入接口
 import { getuserimages } from '../../api/addArticle.js'
 import { getUser } from '@/utils/storage.js'
+import defaultImage from '@/assets/default.png'
 export default {
   props: ['value'],
   data () {
     return {
+      defaultImage,
       // 分页
       page: 1,
-      total: 1,
+      total: 0,
       per_page: 12,
       listimg: [],
       showone: false,
       activeName: 'first',
       imageUrl: '',
-      tabPosition: '0',
+      imageUrll: '',
+      tabPosition: 0,
       current: '',
       headers: {
         Authorization: `Bearer ${getUser().token}`
-      }
+      },
+      allPage: 1,
+      collectPage: 1
     }
   },
   created () {
-    this.getpage()
+    // this.getpage()
+    this.getinfo()
+    // if (this.itemdss !== '') {
+    //   this.defaultImage = this.itemdss
+    // }
+    console.log(this.value)
   },
   methods: {
+    // 弹窗
+    pop_up (index) {
+      this.showone = true
+      this.cindeindex = index
+    },
     // 点击图片
     onclick (index) {
       console.log(index)
-      this.imageUrl = this.listimg[index].url
+      this.imageUrll = this.listimg[index].url
       this.current = index
       // this.aftern = true
     },
     handleCurrentChange (val) {
+      console.log(111)
       this.page = val
-      this.getpage()
+      this.getinfo()
     },
     // 分页方法
-    getpage () {
-      this.page = 1
+    // getpage () {
+    //   this.page = 1
+    getinfo () {
       getuserimages({
         per_page: this.per_page,
         page: this.page,
@@ -112,6 +139,27 @@ export default {
         this.total = res.data.data.total_count
       })
     },
+    // 分页方法
+    getpage () {
+      // 进入到全部
+      if (this.tabPosition === 0) {
+        this.total = 0
+        this.collectPage = this.page
+        this.page = this.allPage
+        // console.log('进到全部也', this.allPage)
+        // console.log('进到全部也。显示收藏', this.collectPage)
+        // console.log('进到全部也。显示当前页码', this.page)
+        this.getinfo()
+      } else {
+        // 收藏
+        this.total = 0
+        this.allPage = this.page
+        this.page = this.collectPage
+        // console.log('进到收藏。显示全部', this.allPage)
+        // console.log('进到收藏。显示当前页码', this.page)
+        this.getinfo()
+      }
+    },
     // 清除
     onclosed () {
       this.imageUrl = ''
@@ -119,7 +167,13 @@ export default {
     },
     // 确定
     onensure () {
-      this.$emit('onensure', this.imageUrl)
+      if (this.activeName === 'first') {
+        this.$emit('onensure', this.imageUrll)
+        this.defaultImage = this.imageUrll
+      } else {
+        this.$emit('onensure', this.imageUrl)
+        this.defaultImage = this.imageUrl
+      }
       this.showone = false
       this.$refs.upload.clearFiles()
     },
@@ -153,6 +207,11 @@ export default {
   //   display: -webkit-box;
   //   -webkit-line-clamp: 2;
   // }
+  .defaultImg {
+    display: block;
+    width: 115px;
+    height: 115px;
+  }
   .el-dialog__footer {
     .dialog-footer {
       text-align: right;

@@ -22,40 +22,29 @@
         </el-form-item>
 
         <!-- 封面 -->
-        <el-form-item label="封面" prop="cover">
-          <el-radio-group v-model="form.cover.type" @change="getpage">
+        <el-form-item label="封面">
+          <el-radio-group v-model="form.cover.type" @change="onchange">
             <el-radio :label="1">单图</el-radio>
             <el-radio :label="3">三图</el-radio>
             <el-radio :label="0">无图</el-radio>
             <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
-          <div class="cover-image">
-            <img
-              :src="form.cover.images[0] ? form.cover.images[0] : defaultImage"
-              alt=""
-              v-show="form.cover.type == 1 || form.cover.type == 3"
-              class="cover"
-              @click="pop_up(0)"
-            />
-            <img
-              :src="form.cover.images[1] ? form.cover.images[1] : defaultImage"
-              alt=""
-              v-show="form.cover.type == 3"
-              class="cover"
-              @click="pop_up(1)"
-            />
-            <img
-              :src="form.cover.images[2] ? form.cover.images[2] : defaultImage"
-              alt=""
-              v-show="form.cover.type == 3"
-              class="cover"
-              @click="pop_up(2)"
-            />
-          </div>
         </el-form-item>
-        <el-form-item>
-          <div v-if="form.cover.type === 1" style="width:100px">
+        <el-form-item
+          class="upllIMg"
+          prop="cover"
+          v-if="form.cover.type !== -1"
+        >
+          <!-- <div class="div" v-if="form.cover.type === 1">
             <uploadingl v-model="form.cover.images[0]"></uploadingl>
+          </div> -->
+
+          <div v-for="(item, index) in form.cover.type" :key="index">
+            <uploadingl
+              ref="uploadingl"
+              @onensure="onensure($event, index)"
+              v-model="form.cover.images[index]"
+            ></uploadingl>
           </div>
         </el-form-item>
         <el-form-item label="频道" prop="channel_id">
@@ -77,7 +66,6 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <uploadingl ref="uploadingl" @onensure="onensure"> </uploadingl>
   </div>
 </template>
 
@@ -96,7 +84,7 @@ import { quillEditor } from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
-import defaultImage from '@/assets/default.png'
+
 export default {
   name: 'addArticle',
   components: {
@@ -119,7 +107,7 @@ export default {
         content: '',
         channel_id: '',
         cover: {
-          type: '',
+          type: 0,
           images: []
         }
       }
@@ -135,13 +123,13 @@ export default {
       if (value.type === 1) {
         if (!value.images[0]) {
           this.$message.error('请上传图片')
-          return callback(new Error('请选择一张封面图'))
+          return
         }
       }
       if (value.type === 3) {
         if (!value.images[0] || !value.images[1] || !value.images[2]) {
           this.$message.error('请上传图片')
-          return callback(new Error('请选择三张封面图'))
+          return
         }
       }
 
@@ -150,14 +138,14 @@ export default {
     return {
       // 频道
       cindeindex: 0,
-      defaultImage,
       channelist: [],
+      imgCopy: [],
       form: {
         title: '',
         content: '',
         channel_id: '',
         cover: {
-          type: '',
+          type: 0,
           images: []
         }
       },
@@ -176,7 +164,7 @@ export default {
           { required: true, message: '请选择频道', trigger: 'change' }
         ],
         content: [{ required: true, message: '请输入内容', trigger: 'change' }],
-        cover: [{ validator: checkAge, trigger: 'change' }]
+        cover: [{ validator: checkAge, trigger: 'blur' }]
       },
       // 富文本框自定义
       editorOption: {
@@ -205,19 +193,20 @@ export default {
   },
 
   methods: {
-    // 点击切换单图
-    getpage () {
-      this.form.cover.images = []
+    onchange () {
+      if (this.form.cover.type === 1) {
+        this.imgCopy = JSON.parse(JSON.stringify(this.form.cover.images))
+        this.form.cover.images = this.form.cover.images.slice(0, 1)
+      }
+      if (this.form.cover.type === 3) {
+        this.form.cover.images = this.imgCopy
+      }
     },
-    // 弹窗
-    pop_up (index) {
-      this.$refs.uploadingl.showone = true
-      this.cindeindex = index
-    },
+
     // 图片传值
-    onensure (img) {
+    onensure (img, index) {
       console.log(img)
-      this.$set(this.form.cover.images, this.cindeindex, img)
+      this.form.cover.images[index] = img
     },
     // 获取编辑文章
     getchonse () {
@@ -226,6 +215,7 @@ export default {
       getarticlestatistics(id).then(res => {
         console.log('获取编辑数据', res)
         this.form = res.data.data
+        // this.$refs.uploadingl.defaultImage = res.data.data.cover.images
       })
     },
 
@@ -254,7 +244,7 @@ export default {
             }
           })
         } else {
-          this.$message.error('验证失败')
+          this.$message.error('请输入内容')
         }
       })
     },
@@ -287,7 +277,7 @@ export default {
             }
           })
         } else {
-          this.$message.error('验证失败')
+          this.$message.error('请输入内容')
         }
       })
     }
@@ -308,6 +298,12 @@ export default {
       background-color: #ebeef5;
     }
     .form {
+      .upllIMg /deep/ .el-form-item__content {
+        display: flex;
+        > div {
+          margin-right: 20px;
+        }
+      }
       margin-top: 40px;
       .ql-editor,
       .ql-blank {
