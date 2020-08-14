@@ -22,7 +22,7 @@
         </el-form-item>
 
         <!-- 封面 -->
-        <el-form-item label="封面">
+        <el-form-item label="封面" prop="cover">
           <el-radio-group v-model="form.cover.type">
             <el-radio label="1">单图</el-radio>
             <el-radio label="3">三图</el-radio>
@@ -72,8 +72,8 @@
           <el-button type="primary" @click="onredact">保存</el-button>
         </el-form-item>
         <el-form-item v-else>
-          <el-button type="primary" @click="onissue">发表</el-button>
-          <el-button @click="ondraft">存入草稿</el-button>
+          <el-button type="primary" @click="onissue(false)">发表</el-button>
+          <el-button @click="onissue(true)">存入草稿</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -105,6 +105,14 @@ export default {
   },
   // 侦听器
   watch: {
+    // 'form.cover': {
+    //   handler () {
+    //     this.$nextTick(() => {
+    //       this.$refs.form.validateField('cover')
+    //     })
+    //   },
+    //   deep: true
+    // },
     '$route.path' () {
       this.form = {
         title: '',
@@ -121,13 +129,30 @@ export default {
     }
   },
   data () {
+    const checkAge = (rule, value, callback) => {
+      console.log(rule)
+      console.log(value)
+      if (value.type === 1) {
+        if (!value.images[0]) {
+          this.$message.error('请上传图片')
+          return callback(new Error('请选择一张封面图'))
+        }
+      }
+      if (value.type === 3) {
+        if (!value.images[0] || !value.images[1] || !value.images[2]) {
+          this.$message.error('请上传图片')
+          return callback(new Error('请选择三张封面图'))
+        }
+      }
+
+      callback()
+    }
     return {
       // 频道
       cindeindex: 0,
       defaultImage,
       channelist: [],
       form: {
-        draft: false,
         title: '',
         content: '',
         channel_id: '',
@@ -150,7 +175,8 @@ export default {
         channel_id: [
           { required: true, message: '请选择频道', trigger: 'change' }
         ],
-        content: [{ required: true, message: '请输入内容', trigger: 'change' }]
+        content: [{ required: true, message: '请输入内容', trigger: 'change' }],
+        cover: [{ validator: checkAge, trigger: 'change' }]
       },
       // 富文本框自定义
       editorOption: {
@@ -228,17 +254,23 @@ export default {
         }
       })
     },
-    // 草稿
-    ondraft () {
+
+    // 发表存草稿
+    onissue (draft) {
       this.$refs.form.validate(resues => {
         if (resues) {
-          this.form.draft = true
+          // this.form.draft = draft
           this.form.cover.type = Number(this.form.cover.type)
-          getarticles(this.form).then(res => {
-            console.log(res)
+          getarticles(this.form, `draft=${draft}`).then(res => {
+            console.log('发表', res)
             if (res.status === 201) {
               this.$refs.form.resetFields()
-              this.$message.success('已存草稿')
+              if (draft === true) {
+                this.$message.success('已存草稿')
+              } else {
+                this.$message.success('发表成功')
+              }
+
               this.form = {
                 title: '',
                 content: '',
@@ -250,36 +282,6 @@ export default {
               }
             }
           })
-        } else {
-          this.$message.error('验证失败')
-        }
-      })
-    },
-    // 发表
-    onissue () {
-      this.$refs.form.validate(resues => {
-        if (resues) {
-          this.form.cover.type = Number(this.form.cover.type)
-          getarticles(this.form)
-            .then(res => {
-              console.log('发表', res)
-              if (res.status === 201) {
-                this.$refs.form.resetFields()
-                this.$message.success('发表成功')
-                this.form = {
-                  title: '',
-                  content: '',
-                  channel_id: '',
-                  cover: {
-                    type: '',
-                    images: []
-                  }
-                }
-              }
-            })
-            .catch(() => {
-              this.$message.error('请检查好你的图片数量')
-            })
         } else {
           this.$message.error('验证失败')
         }
