@@ -5,7 +5,7 @@ import { getUser, delUser } from './storage.js'
 import JSONbig from 'json-bigint'
 import axios from 'axios'
 
-import { Message } from 'element-ui'
+// import { message } from 'element-ui'
 import router from '@/router'
 
 // 创建axios的实例
@@ -64,11 +64,12 @@ instance.interceptors.response.use(
     if (err.response && err.response.status === 401) {
       delUser()
       router.push('/login')
-    } else {
-      if (err.response.status !== 201) {
-        Message.fail(err.response.message)
-      }
     }
+    // else {
+    //   if (err.response.status !== 201) {
+    //     message.error(err.response.message)
+    //   }
+    // }
     return Promise.reject(err)
   }
 )
