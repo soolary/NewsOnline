@@ -173,7 +173,7 @@ export default {
         .then(res => {
           console.log(res)
           this.$message.success('删除成功')
-          this.getData()
+          this.search()
         })
         .catch(() => {
           this.$message.warning('删除失败')
