@@ -24,10 +24,10 @@
         <!-- 封面 -->
         <el-form-item label="封面" prop="cover">
           <el-radio-group v-model="form.cover.type" @change="getpage">
-            <el-radio label="1">单图</el-radio>
-            <el-radio label="3">三图</el-radio>
-            <el-radio label="0">无图</el-radio>
-            <el-radio label="-1">自动</el-radio>
+            <el-radio :label="1">单图</el-radio>
+            <el-radio :label="3">三图</el-radio>
+            <el-radio :label="0">无图</el-radio>
+            <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
           <div class="cover-image">
             <img
