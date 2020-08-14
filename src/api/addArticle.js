@@ -8,9 +8,9 @@ function getchannels () {
   })
 }
 // 发表文章
-function getarticles (data) {
+function getarticles (data, draft) {
   return instance({
-    url: 'mp/v1_0/articles',
+    url: `mp/v1_0/articles?${draft}`,
     method: 'post',
     data
   })
