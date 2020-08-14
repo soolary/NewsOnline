@@ -37,7 +37,7 @@
             </el-row>
             <!-- 分页 -->
             <el-pagination
-              v-if="total > 0"
+              v-if="total > 12"
               background
               layout="prev, pager, next"
               @current-change="handleCurrentChange"
@@ -144,7 +144,6 @@ export default {
       // 进入到全部
       if (this.tabPosition === 0) {
         this.total = 0
-
         this.collectPage = this.page
         this.page = this.allPage
         // console.log('进到全部也', this.allPage)

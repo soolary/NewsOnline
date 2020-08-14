@@ -23,7 +23,7 @@
 
         <!-- 封面 -->
         <el-form-item label="封面">
-          <el-radio-group v-model="form.cover.type" @change="getpage">
+          <el-radio-group v-model="form.cover.type" @change="onchange">
             <el-radio :label="1">单图</el-radio>
             <el-radio :label="3">三图</el-radio>
             <el-radio :label="0">无图</el-radio>
@@ -139,6 +139,7 @@ export default {
       // 频道
       cindeindex: 0,
       channelist: [],
+      imgCopy: [],
       form: {
         title: '',
         content: '',
@@ -163,7 +164,7 @@ export default {
           { required: true, message: '请选择频道', trigger: 'change' }
         ],
         content: [{ required: true, message: '请输入内容', trigger: 'change' }],
-        cover: [{ validator: checkAge, trigger: 'change' }]
+        cover: [{ validator: checkAge, trigger: 'blur' }]
       },
       // 富文本框自定义
       editorOption: {
@@ -192,9 +193,14 @@ export default {
   },
 
   methods: {
-    // 点击切换单图
-    getpage () {
-      this.form.cover.images = []
+    onchange () {
+      if (this.form.cover.type === 1) {
+        this.imgCopy = JSON.parse(JSON.stringify(this.form.cover.images))
+        this.form.cover.images = this.form.cover.images.slice(0, 1)
+      }
+      if (this.form.cover.type === 3) {
+        this.form.cover.images = this.imgCopy
+      }
     },
 
     // 图片传值
