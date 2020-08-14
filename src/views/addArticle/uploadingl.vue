@@ -101,6 +101,7 @@ export default {
     },
     // 分页方法
     getpage () {
+      this.page = 1
       getuserimages({
         per_page: this.per_page,
         page: this.page,
