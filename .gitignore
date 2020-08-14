@@ -3,7 +3,7 @@ node_modules
 
 # 取消对/dist目录的忽略。 让git来管理dist目录。
 # 只有让git来管理这个目录，才可能把它推到远程仓库。
- /dist
+# /dist
 
 # local env files
 .env.local
