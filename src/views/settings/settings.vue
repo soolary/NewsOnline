@@ -28,7 +28,12 @@
                 <el-input v-model="userInfo.name"></el-input>
               </el-form-item>
               <el-form-item label="媒体介绍: ">
-                <el-input type="textarea" v-model="userInfo.intro"></el-input>
+                <el-input
+                  type="textarea"
+                  :rows="5"
+                  resize="none"
+                  v-model="userInfo.intro"
+                ></el-input>
               </el-form-item>
               <el-form-item label="联系邮箱: " prop="email">
                 <el-input v-model="userInfo.email"></el-input>
