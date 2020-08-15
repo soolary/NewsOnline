@@ -85,7 +85,6 @@
 <script>
 import { userGetProfile } from '../../api/user.js'
 import { delUser, getUser } from '../../utils/storage.js'
-import eventBus from '@/eventBus.js'
 export default {
   name: 'Layout',
   data () {
@@ -99,10 +98,10 @@ export default {
     this.setUserProfile()
     const { name, photo } = getUser()
     this.user = { name, photo }
-    eventBus.$on('updateUserName', data => {
+    this.$eventBus.$on('updateUserName', data => {
       this.user.name = data
     })
-    eventBus.$on('updateUserPhoto', data => {
+    this.$eventBus.$on('updateUserPhoto', data => {
       this.user.photo = data
     })
   },

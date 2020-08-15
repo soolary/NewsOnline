@@ -67,7 +67,6 @@
 
 <script>
 import { setUser, getUser } from '@/utils/storage.js'
-import eventBus from '@/eventBus'
 export default {
   name: 'setting',
   data () {
@@ -116,7 +115,7 @@ export default {
         })
         this.$message.success('保存设置成功')
         // 同步到本地并存入
-        eventBus.$emit('updateUserName', this.userInfo.name)
+        this.$eventBus.$emit('updateUserName', this.userInfo.name)
         const user = getUser()
         user.name = this.userInfo.name
         setUser(user)
@@ -148,7 +147,7 @@ export default {
         // 同步到本地并存入
         this.userInfo.photo = res.data.data.photo
         // 同时更新到layout和本地
-        eventBus.$emit('updateUserPhoto', this.userInfo.photo)
+        this.$eventBus.$emit('updateUserPhoto', this.userInfo.photo)
         const user = getUser()
         user.photo = this.userInfo.photo
         setUser(user)
