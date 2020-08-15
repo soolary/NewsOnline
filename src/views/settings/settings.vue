@@ -53,6 +53,7 @@
               :before-upload="beforeAvatarUpload"
               :http-request="uploadFile"
               :show-file-list="false"
+              v-loading="loading"
             >
               <img
                 class="avatar"
@@ -97,7 +98,8 @@ export default {
             trigger: 'blur'
           }
         ]
-      }
+      },
+      loading: false
     }
   },
   methods: {
@@ -142,24 +144,21 @@ export default {
     },
 
     async uploadFile ({ file }) {
-      try {
-        const formdata = new FormData()
-        formdata.append('photo', file)
-        // 上传头像接口
-        const res = await this.$request.patch('mp/v1_0/user/photo', formdata)
-        console.log(res)
-        this.$message.success('修改头像成功')
-        // 同步到本地并存入
-        this.userInfo.photo = res.data.data.photo
-        // 同时更新到layout和本地
-        this.$eventBus.$emit('updateUserPhoto', this.userInfo.photo)
-        const user = getUser()
-        user.photo = this.userInfo.photo
-        setUser(user)
-      } catch (e) {
-        console.log(e)
-        this.$message.error('修改头像失败')
-      }
+      this.loading = true
+      const formdata = new FormData()
+      formdata.append('photo', file)
+      // 上传头像接口
+      const res = await this.$request.patch('mp/v1_0/user/photo', formdata)
+      console.log(res)
+      // 同步到本地并存入
+      this.userInfo.photo = res.data.data.photo
+      // 同时更新到layout和本地
+      this.$eventBus.$emit('updateUserPhoto', this.userInfo.photo)
+      const user = getUser()
+      user.photo = this.userInfo.photo
+      setUser(user)
+      this.loading = false
+      this.$message.success('修改头像成功')
     },
     async getUserInfo () {
       const res = await this.$request.get('mp/v1_0/user/profile')
