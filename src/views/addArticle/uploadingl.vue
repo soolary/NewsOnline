@@ -146,6 +146,7 @@ export default {
         this.total = 0
         this.collectPage = this.page
         this.page = this.allPage
+        this.current = ''
         // console.log('进到全部也', this.allPage)
         // console.log('进到全部也。显示收藏', this.collectPage)
         // console.log('进到全部也。显示当前页码', this.page)
@@ -158,6 +159,7 @@ export default {
         // console.log('进到收藏。显示全部', this.allPage)
         // console.log('进到收藏。显示当前页码', this.page)
         this.getinfo()
+        this.current = ''
       }
     },
     // 清除
@@ -167,12 +169,21 @@ export default {
     },
     // 确定
     onensure () {
-      if (!this.imageUrll) {
+      console.log(this.imageUrll, !this.imageUrl)
+      if (this.imageUrll && !this.imageUrl && this.activeName === 'second') {
+        console.log(234)
         this.showone = false
         this.$refs.upload.clearFiles()
-        // console.log(1111)
         return
       }
+      if (!this.imageUrl && !this.imageUrll) {
+        console.log(123)
+        this.$refs.upload.clearFiles()
+        this.showone = false
+        return
+      }
+
+      console.log(1121)
       if (this.activeName === 'first') {
         this.$emit('onensure', this.imageUrll)
         this.defaultImage = this.imageUrll
