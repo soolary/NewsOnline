@@ -84,7 +84,7 @@ import { quillEditor } from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
-
+import defaultImage from '@/assets/default.png'
 export default {
   name: 'addArticle',
   components: {
@@ -137,6 +137,7 @@ export default {
     }
     return {
       // 频道
+      defaultImage,
       cindeindex: 0,
       channelist: [],
       imgCopy: [],
@@ -206,7 +207,8 @@ export default {
     // 图片传值
     onensure (img, index) {
       console.log(img)
-      this.form.cover.images[index] = img
+      this.$set(this.form.cover.images, index, img)
+      // this.form.cover.images[index] = img
     },
     // 获取编辑文章
     getchonse () {
@@ -241,6 +243,8 @@ export default {
                   images: []
                 }
               }
+              this.$set(this.form.cover, 'images', [])
+              this.$set(this, 'imgCopy', [])
             }
           })
         } else {
@@ -264,7 +268,7 @@ export default {
               } else {
                 this.$message.success('发表成功')
               }
-
+              this.$refs.uploadingl.defaultImage = this.defaultImage
               this.form = {
                 title: '',
                 content: '',
@@ -274,6 +278,8 @@ export default {
                   images: []
                 }
               }
+              this.$set(this.form.cover, 'images', [])
+              this.$set(this, 'imgCopy', [])
             }
           })
         } else {
