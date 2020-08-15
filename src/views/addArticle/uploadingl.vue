@@ -102,8 +102,8 @@ export default {
   created () {
     // this.getpage()
     this.getinfo()
-    // if (this.itemdss !== '') {
-    //   this.defaultImage = this.itemdss
+    // if (this.value !== '') {
+    //   this.defaultImage = this.value
     // }
     console.log(this.value)
   },
@@ -167,6 +167,12 @@ export default {
     },
     // 确定
     onensure () {
+      if (!this.imageUrll) {
+        this.showone = false
+        this.$refs.upload.clearFiles()
+        // console.log(1111)
+        return
+      }
       if (this.activeName === 'first') {
         this.$emit('onensure', this.imageUrll)
         this.defaultImage = this.imageUrll
