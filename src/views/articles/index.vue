@@ -52,7 +52,13 @@
       <el-table :data="tableData" style="width: 100%" class="table">
         <el-table-column label="封面" width="250">
           <template slot-scope="scope">
-            <img :src="scope.row.cover.images[0]" alt="" class="avatar" />
+            <img
+              v-if="scope.row.cover.images[0]"
+              :src="scope.row.cover.images[0]"
+              alt=""
+              class="avatar"
+            />
+            <img v-else src="@/assets/error.gif" alt="" class="avatar" />
           </template>
         </el-table-column>
         <el-table-column prop="title" label="标题" width="250">
